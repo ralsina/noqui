@@ -62,13 +62,20 @@ async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
         # Corner cases: empty lists, one element, only one repeated element
         return l
 
+    # Normalize data so the algorithm is truly O(n)
     norm_l = _normalize(l)
+
     d = deque()
     waiting = []
+
+    # Create a coroutine for each element, where they will 
+    # put append them sorted in the deque 
     loop = asyncio.get_running_loop()
     for i in norm_l:
         waiting.append(asyncio.create_task(_wait(i, d, how_fast)))
 
+    # Optimization opportunity: results *can* be collected
+    # while coroutines are still running.
     await asyncio.gather(*waiting)
     sorted = [d.popleft() for _ in l]
     return _denormalize(l, sorted)
