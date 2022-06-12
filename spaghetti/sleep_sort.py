@@ -13,6 +13,56 @@ from collections import deque
 from typing import Iterable, List
 
 
+__all__ = ["async_sort", "sort"]
+
+
+def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
+    """
+    Implement sort (only for integers).
+
+    Arguments:
+
+    * l            An Iterable of integers to be sorted
+    * how_fast     Integer expressing how fast to sort. Larger is faster (default 1000)
+
+    Caveats:
+
+    * Lists that are too long (millions/billions of elements) may fail to sort
+    * If you ask to sort too fast, results may be inaccurate
+
+    >>> sort([3, 2, 1])
+    [1, 2, 3]
+
+    >>> import timeit
+    >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=100), number=100)
+    >>> t2 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=1000), number=100)
+    >>> t3 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=10000), number=100)
+    >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
+    True
+
+
+    """
+
+    return asyncio.run(async_sort(l, how_fast))
+
+
+async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
+    """
+    Async implementation of sleep sort.
+    """
+
+    norm_l = _normalize(l)
+    d = deque()
+    waiting = []
+    loop = asyncio.get_running_loop()
+    for i in norm_l:
+        waiting.append(asyncio.create_task(_wait(i, d, how_fast)))
+
+    await asyncio.gather(*waiting)
+    sorted = [d.popleft() for _ in l]
+    return _denormalize(l, sorted)
+
+
 async def _wait(value: Fraction, d: deque, how_fast: int):
     await asyncio.sleep(value / how_fast)
     d.append(value)
@@ -56,50 +106,3 @@ def _denormalize(original: Iterable[int], normalized: List[Fraction]) -> List[Fr
     factor = Fraction(1, max_v - min_v)
 
     return [int(i / factor + min_v) for i in normalized]
-
-
-async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
-    """
-    Async implementation of sleep sort.
-    """
-
-    norm_l = _normalize(l)
-    d = deque()
-    waiting = []
-    loop = asyncio.get_running_loop()
-    for i in norm_l:
-        waiting.append(asyncio.create_task(_wait(i, d, how_fast)))
-
-    await asyncio.gather(*waiting)
-    sorted = [d.popleft() for _ in l]
-    return _denormalize(l, sorted)
-
-
-def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
-    """
-    Implement sort (only for integers).
-
-    Arguments:
-
-    * l            An Iterable of integers to be sorted
-    * how_fast     Integer expressing how fast to sort. Larger is faster (default 1000)
-
-    Caveats:
-
-    * Lists that are too long (millions/billions of elements) may fail to sort
-    * If you ask to sort too fast, results may be inaccurate
-
-    >>> sort([3, 2, 1])
-    [1, 2, 3]
-
-    >>> import timeit
-    >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=100), number=100)
-    >>> t2 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=1000), number=100)
-    >>> t3 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=10000), number=100)
-    >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
-    True
-
-
-    """
-
-    return asyncio.run(async_sort(l, how_fast))
