@@ -40,7 +40,14 @@ def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
     >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
     True
 
+    >>> sort([])
+    []
 
+    >>> sort([1])
+    [1]
+
+    >>> sort([1, 1])
+    [1, 1]
     """
 
     return asyncio.run(async_sort(l, how_fast))
@@ -50,6 +57,10 @@ async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
     """
     Async implementation of sleep sort.
     """
+
+    if len(l) < 2 or len(set(l)) < 2:
+        # Corner cases: empty lists, one element, only one repeated element
+        return l
 
     norm_l = _normalize(l)
     d = deque()
