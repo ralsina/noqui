@@ -10,7 +10,7 @@ the unsorted array (that description is **wrong**).
 import asyncio
 from fractions import Fraction
 from collections import deque
-from typing import Iterable
+from typing import Iterable, List
 
 
 async def _wait(value, d: deque):
@@ -18,7 +18,23 @@ async def _wait(value, d: deque):
     d.append(value)
 
 
-async def async_sort(l: List[fraction]) -> List[int]:
+def _normalize(l: Iterable[int]) -> List[Fraction]:
+    max_v = max(l)
+    min_v = min(l)
+    factor = Fraction(1, max_v - min_v)
+
+    return [(i - min_v) * factor for i in l]
+
+
+def _denormalize(original: Iterable[int], normalized: List[Fraction]) -> List[Fraction]:
+    max_v = max(original)
+    min_v = min(original)
+    factor = Fraction(1, max_v - min_v)
+
+    return [int(i / factor + min_v) for i in normalized]
+
+
+async def async_sort(l: List[Fraction]) -> List[int]:
     """
     Async implementation of sleep sort.
     """
@@ -42,4 +58,6 @@ def sort(l: Iterable[int]) -> Iterable[int]:
 
     """
 
-    return asyncio.run(async_sort(l))
+    norm_l = _normalize(l)
+
+    return _denormalize(l, asyncio.run(async_sort(norm_l)))
