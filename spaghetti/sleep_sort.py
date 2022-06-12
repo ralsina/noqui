@@ -63,14 +63,16 @@ async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
     Async implementation of sleep sort.
     """
 
+    norm_l = _normalize(l)
     d = deque()
     waiting = []
     loop = asyncio.get_running_loop()
-    for i in l:
+    for i in norm_l:
         waiting.append(asyncio.create_task(_wait(i, d, how_fast)))
 
     await asyncio.gather(*waiting)
-    return [d.popleft() for _ in l]
+    sorted = [d.popleft() for _ in l]
+    return _denormalize(l, sorted)
 
 
 def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
@@ -91,15 +93,13 @@ def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
     [1, 2, 3]
 
     >>> import timeit
-    >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], 100), number=100)
-    >>> t2 = timeit.timeit(lambda: sort([1, 2, 3], 1000), number=100)
-    >>> t3 = timeit.timeit(lambda: sort([1, 2, 3], 10000), number=100)
+    >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=100), number=100)
+    >>> t2 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=1000), number=100)
+    >>> t3 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=10000), number=100)
     >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
     True
 
 
     """
 
-    norm_l = _normalize(l)
-
-    return _denormalize(l, asyncio.run(async_sort(norm_l, how_fast)))
+    return asyncio.run(async_sort(l, how_fast))
