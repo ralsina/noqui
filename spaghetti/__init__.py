@@ -19,6 +19,18 @@ async def _wait(value: Fraction, d: deque, how_fast: int):
 
 
 def _normalize(l: Iterable[int]) -> List[Fraction]:
+    """
+    Normalize a list of integers.
+
+    Transforms a list of integers into a list of fractions
+    in the interval [0, 1]
+
+    >>> _normalize([5, 6, 7])
+    [Fraction(0, 1), Fraction(1, 2), Fraction(1, 1)]
+
+    >>> _normalize([-5, 6, 7])
+    [Fraction(0, 1), Fraction(11, 12), Fraction(1, 1)]
+    """
     max_v = max(l)
     min_v = min(l)
     factor = Fraction(1, max_v - min_v)
@@ -27,6 +39,18 @@ def _normalize(l: Iterable[int]) -> List[Fraction]:
 
 
 def _denormalize(original: Iterable[int], normalized: List[Fraction]) -> List[Fraction]:
+    """Given two lists, the original and a normalized but disordered version of it,
+    denormalize the second one to match the original.
+
+    Therefore, the elements of the output will match the original list
+    but the order will match the normalized list.
+
+    >>> _denormalize([5, 6, 7], [Fraction(1, 1), Fraction(1, 2), Fraction(0, 1)])
+    [7, 6, 5]
+
+    >>> _denormalize([6, 7, -5], [Fraction(0, 1), Fraction(11, 12), Fraction(1, 1)])
+    [-5, 6, 7]
+    """
     max_v = max(original)
     min_v = min(original)
     factor = Fraction(1, max_v - min_v)
