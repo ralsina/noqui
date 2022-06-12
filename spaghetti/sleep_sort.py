@@ -90,6 +90,14 @@ def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
     >>> sort([3, 2, 1])
     [1, 2, 3]
 
+    >>> import timeit
+    >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], 100), number=100)
+    >>> t2 = timeit.timeit(lambda: sort([1, 2, 3], 1000), number=100)
+    >>> t3 = timeit.timeit(lambda: sort([1, 2, 3], 10000), number=100)
+    >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
+    True
+
+
     """
 
     norm_l = _normalize(l)
