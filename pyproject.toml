@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "noqui"
-version = "0.0.1"
+version = "0.0.2"
 description = "Implementation of unusual things"
 authors = ["Roberto Alsina <roberto.alsina@gmail.com>"]
 license = "MIT"
