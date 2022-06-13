@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "spaghetti"
+name = "ñoqui"
 version = "0.0.1"
-description = "Implementation of exotic sorting algorithms"
+description = "Implementation of unusual things"
 authors = ["Roberto Alsina <roberto.alsina@gmail.com>"]
 license = "MIT"
 
