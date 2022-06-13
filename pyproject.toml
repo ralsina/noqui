@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "nñoqui"
+name = "noqui"
 version = "0.0.1"
 description = "Implementation of unusual things"
 authors = ["Roberto Alsina <roberto.alsina@gmail.com>"]

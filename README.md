@@ -9,7 +9,7 @@ algorithm that is O(n) (yes, really!)
 To use it:
 
 ```python
->>> from nñoqui.sleep_sort import sort  # Or async_sort!
+>>> from noqui.sleep_sort import sort  # Or async_sort!
 >>> sort([3, 2, 1], how_fast=500)
 [1, 2, 3]
 ```
