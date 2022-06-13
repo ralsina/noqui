@@ -29,9 +29,13 @@ def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
 
     * Lists that are too long (millions/billions of elements) may fail to sort
     * If you ask to sort too fast, results may be inaccurate
+    * It only sorts integers. However, all ordered types in a computer are
+      equivalent to integers, so you just need to pre/postprocess the list.
 
     >>> sort([3, 2, 1])
     [1, 2, 3]
+
+    The how_fast argument works:
 
     >>> import timeit
     >>> t1 = timeit.timeit(lambda: sort([1, 2, 3], how_fast=100), number=100)
@@ -40,6 +44,8 @@ def sort(l: Iterable[int], how_fast: int = 1000) -> Iterable[int]:
     >>> t1 > t2 > t3  or (t1, t2, t3) # Larger is slower
     True
 
+    It works for corner cases
+    
     >>> sort([])
     []
 
