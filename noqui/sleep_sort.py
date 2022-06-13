@@ -66,7 +66,7 @@ async def async_sort(l: List[Fraction], how_fast: int = 1000) -> List[int]:
 
     if len(l) < 2 or len(set(l)) < 2:
         # Corner cases: empty lists, one element, only one repeated element
-        return l
+        return l[:]
 
     # Normalize data so the algorithm is truly O(n)
     norm_l = _normalize(l)
@@ -104,7 +104,21 @@ def _normalize(l: Iterable[int]) -> List[Fraction]:
 
     >>> _normalize([-5, 6, 7])
     [Fraction(0, 1), Fraction(11, 12), Fraction(1, 1)]
+
+    Handles empty lists
+    >>> _normalize([])
+    []
+
+    Handle single-element lists
+    >>> _normalize([1])
+    [1]
+
     """
+
+    # Handle corner cases
+    if len(set(l)) < 2:
+        return l[:]
+
     max_v = max(l)
     min_v = min(l)
     factor = Fraction(1, max_v - min_v)
@@ -124,7 +138,20 @@ def _denormalize(original: Iterable[int], normalized: List[Fraction]) -> List[Fr
 
     >>> _denormalize([6, 7, -5], [Fraction(0, 1), Fraction(11, 12), Fraction(1, 1)])
     [-5, 6, 7]
+
+    Handles empty lists
+    >>> _denormalize([], [])
+    []
+
+    Handle single-element lists
+    >>> _denormalize([1], Fraction(0, 1))
+    [1]
     """
+
+    # Handle corner cases
+    if len(set(original)) < 2:
+        return original[:]
+
     max_v = max(original)
     min_v = min(original)
     factor = Fraction(1, max_v - min_v)
